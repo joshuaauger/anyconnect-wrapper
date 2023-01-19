@@ -11,13 +11,41 @@ function prompt() {
 EOT
 }
 
-function password_wrapper() {
-    PASS=$(security find-generic-password -a "$(whoami)" -s vpn -w)
+function get_url(){
+    security find-generic-password -a "$(whoami)" -s vpn_url -w 2> /dev/null
+}
 
+function set_url() {
+    security add-generic-password -a "$(whoami)" -s vpn_url -w $1 > /dev/null 2>&1
+}
+
+function get_password() {
+    security find-generic-password -a "$(whoami)" -s vpn -w 2> /dev/null
+}
+
+function set_password() {
+    security add-generic-password -a "$(whoami)" -s vpn -w $1 > /dev/null 2>&1
+}
+
+function url_wrapper() {
+    URL=$(get_url)
+    
+    if [ -z "$URL" ]
+    then
+        URL=$(prompt 'Enter the test/keepalive URL:' 'https://www.google.com')
+        set_url $URL
+    fi
+
+    echo "$URL"
+}
+
+function password_wrapper() {
+    PASS=$(get_password)
+    
     if [ -z "$PASS" ]
     then
         PASS=$(prompt 'Enter VPN Password:' 'password')
-        security add-generic-password -a "$(whoami)" -s vpn -w "$PASS" > /dev/null 2>&1
+        set_password $PASS
     fi
     echo "$PASS"
 }
@@ -28,16 +56,15 @@ function read_vars() {
     VPN=1 #This should be the mac group, change as needed.
     MFA=$(prompt 'Enter your MFA Token:' '')
 
-    echo "$VPN" > /tmp/vpn.tmp
-    echo "$USERNAME" >> /tmp/vpn.tmp
-    echo "$MFA" >> /tmp/vpn.tmp
-    echo "$PASS" >> /tmp/vpn.tmp
+    echo "$VPN" > /tmp/access.tmp
+    { echo "$USERNAME"; echo "$MFA"; echo "$PASS"; } >> /tmp/access.tmp
 }
 
 function connect() {
     read_vars
-    /opt/cisco/anyconnect/bin/vpn -s connect VPN < /tmp/vpn.tmp
-    rm /tmp/vpn.tmp
+    printf "%s\n%s\n%s\n%s\n" "$VPN" "$USERNAME" "$MFA" "$PASS" | /opt/cisco/anyconnect/bin/vpn connect VPN -s > /tmp/anyconnect-wrappers.log 2>&1
+    status
+    rm -f /tmp/access.tmp
 }
 
 function disconnect() {
@@ -55,7 +82,11 @@ function status() {
 }
 
 function monitor() {
-    if [[ ! -f $DISABLE ]]; then  
+    if [[ ! -f $DISABLE ]]; then
+        #Let's keep this baby alive 💻
+        #I really hope this doesn't break something, it shouldn't right? 👹
+        URL=$(url_wrapper)
+        curl -s -o /dev/null "$URL"
         if [[ "{$(/opt/cisco/anyconnect/bin/vpn status)[0]}" == *"Disconnected"* ]]; then
             connect
         fi
@@ -67,7 +98,7 @@ function agent_disable() {
 }
 
 function agent_enable() {
-    rm "$DISABLE"
+    rm -f "$DISABLE"
 }
 
 function print_help() {
