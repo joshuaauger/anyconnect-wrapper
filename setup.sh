@@ -8,7 +8,7 @@ DISABLE="$HOME/.vpn.disable"
 ## The common functions need to be at the top so they load before everything else
 function set_bin_permissions(){
     # chown "$(whoami)":"$(id -gn)" "$BIN"
-    chmod 770 "$BIN"
+    chmod 550 "$BIN"
 }
 
 function set_agent_permissions() {
@@ -17,11 +17,11 @@ function set_agent_permissions() {
 }
 
 function load_launchagent() {
-    launchctl load -w "$LAUNCH_AGENT"
+    launchctl load -w "$LAUNCH_AGENT" > /dev/null 2>&1
 }
 
 function unload_launchagent() {
-    launchctl unload -w "$LAUNCH_AGENT"
+    launchctl unload -w "$LAUNCH_AGENT" > /dev/null 2>&1
 }
 
 
@@ -33,8 +33,8 @@ function update_binaries() {
 }
 
 function update_launchagent() {
-    unload_launchagent 2> /dev/null
-    rm "$LAUNCH_AGENT" 2> /dev/null
+    unload_launchagent
+    rm "$LAUNCH_AGENT" > /dev/null 2>&1
     cp "$DIR"/com.wrapper.utilities.vpn.plist "$LAUNCH_AGENT"
     set_agent_permissions
     load_launchagent
@@ -49,7 +49,7 @@ function update_git(){
     fi
 }
 
-function updaet_nogit() {
+function update_nogit() {
     update_binaries
     update_launchagent
 }
@@ -70,9 +70,9 @@ function install() {
 
 function uninstall() {
     unload_launchagent
-    rm "$LAUNCH_AGENT" 2> /dev/null
-    rm "$BIN" 2> /dev/null
-    security delete-generic-password -a "$(whoami)" -s vpn
+    rm "$LAUNCH_AGENT" > /dev/null 2>&1
+    rm "$BIN" > /dev/null 2>&1
+    security delete-generic-password -a "$(whoami)" -s vpn > /dev/null 2>&1
     echo "Disabled and removed the vpn wrapper."
 }
 

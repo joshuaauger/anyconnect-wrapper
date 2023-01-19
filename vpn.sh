@@ -12,12 +12,12 @@ EOT
 }
 
 function password_wrapper() {
-    PASS=$(security find-generic-password -a "$(whoami)" -s vpn -w "$PASS" 2> /dev/null)
+    PASS=$(security find-generic-password -a "$(whoami)" -s vpn -w)
 
     if [ -z "$PASS" ]
     then
         PASS=$(prompt 'Enter VPN Password:' 'password')
-        security add-generic-password -a "$(whoami)" -s vpn -w "$PASS" 2> /dev/null
+        security add-generic-password -a "$(whoami)" -s vpn -w "$PASS" > /dev/null 2>&1
     fi
     echo "$PASS"
 }
