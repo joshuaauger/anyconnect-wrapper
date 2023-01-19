@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+
 DIR=$(pwd)
 LAUNCH_AGENT="$HOME/Library/LaunchAgents/com.wrapper.utilities.vpn.plist"
 BIN="/usr/local/bin/vpn"

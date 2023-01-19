@@ -33,7 +33,7 @@ function url_wrapper() {
     if [ -z "$URL" ]
     then
         URL=$(prompt 'Enter the test/keepalive URL:' 'https://www.google.com')
-        set_url $URL
+        set_url "$URL"
     fi
 
     echo "$URL"
@@ -45,7 +45,7 @@ function password_wrapper() {
     if [ -z "$PASS" ]
     then
         PASS=$(prompt 'Enter VPN Password:' 'password')
-        set_password $PASS
+        set_password "$PASS"
     fi
     echo "$PASS"
 }
@@ -131,5 +131,3 @@ while :; do
 
     shift
 done
-
-
