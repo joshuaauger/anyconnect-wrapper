@@ -72,6 +72,7 @@ function uninstall() {
     unload_launchagent
     rm "$LAUNCH_AGENT" 2> /dev/null
     rm "$BIN" 2> /dev/null
+    security delete-generic-password -a "$(whoami)" -s vpn
     echo "Disabled and removed the vpn wrapper."
 }
 
