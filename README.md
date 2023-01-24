@@ -1,5 +1,12 @@
 # anyconnect-wrapper
 
+### VPN script usage
+You could do something like this to configure, connect and enable the agent.
+`vpn --config --connect --agent enable`
+
+You could also just run this to view the current agent status:
+`vpn --agent status`
+
 ### Information
 This script can be used to create a Launch Agent and/or use the vpn wrapper to alleviate some of the headaches of the Cisco Anyconnect VPN.  
 
