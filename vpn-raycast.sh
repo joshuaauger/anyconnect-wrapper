@@ -2,7 +2,7 @@
 #
 # Required parameters:
 # @raycast.schemaVersion 1
-# @raycast.title anyconnect
+# @raycast.title anyconnect vpn
 # @raycast.mode fullOutput
 #
 # Optional parameters:
