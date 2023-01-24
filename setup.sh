@@ -72,10 +72,22 @@ function install_binaries() {
     update_binaries
 }
 
+function install_plugins() {
+    if open -Ra "Raycast"; then 
+        mkdir -p "$HOME"/.config/raycast
+        cp vpn-raycast.sh "$HOME"/.config/raycast/vpn.sh
+    fi
+}
+
+function remove_plugins() {
+    rm "$HOME"/.config/raycast/vpn.sh
+}
+
 function install() {
     install_dependencies
     install_binaries
     install_launchagent
+    install_plugins
     $BIN --agent enable
     echo "Insatlled and loaded the vpn wrapper."
 }

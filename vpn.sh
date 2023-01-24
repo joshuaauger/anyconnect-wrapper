@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 USER=$(whoami)
 DISABLE="$HOME/.vpn.disable"
+PLAIN=0
 
 ## Some prompt stuff, helps wrap prompts.
 function prompt() {
@@ -12,13 +13,17 @@ EOT
 }
 
 function notifications() {
-	which terminal-notifier > /dev/null 2>&1
-	if [ $? -ne 0 ];
-	then
-		osascript -e "display notification \"$1\" with title \"Cisco Anyconnect $2\""
-	else
-		# terminal-notifier -remove 1 > /dev/null 2>&1
-		terminal-notifier -group 1 -sender 'com.cisco.anyconnect.gui'  -title "Cisco Anyconnect $2" -message "$1" > /dev/null 2>&1
+	if [ $PLAIN -ne 0 ]; then
+		echo "$2 $1"
+	else 
+		which terminal-notifier > /dev/null 2>&1
+		if [ $? -ne 0 ];
+		then
+			osascript -e "display notification \"$1\" with title \"Cisco Anyconnect $2\""
+		else
+			# terminal-notifier -remove 1 > /dev/null 2>&1
+			terminal-notifier -group 1 -sender 'com.cisco.anyconnect.gui'  -title "Cisco Anyconnect $2" -message "$1" > /dev/null 2>&1
+		fi
 	fi
 }
 
@@ -198,6 +203,10 @@ while [[ $# -gt 0 ]]; do
 	-h|--help)
 		print_help
 		exit 0
+		;;
+	-p|--plaintext)
+		PLAIN=1
+		shift
 		;;
 	-*)
 		notifications "Unknown option $1" "Argument:"
