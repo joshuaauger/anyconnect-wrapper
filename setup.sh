@@ -74,13 +74,13 @@ function install_binaries() {
 
 function install_plugins() {
     if open -Ra "Raycast"; then 
-        mkdir -p "$HOME"/.config/raycast
-        cp vpn-raycast.sh "$HOME"/.config/raycast/vpn.sh
+        mkdir -p "$HOME"/.config/raycast/scripts
+        cp vpn-raycast.sh "$HOME"/.config/raycast/scripts/vpn.sh
     fi
 }
 
 function remove_plugins() {
-    rm "$HOME"/.config/raycast/vpn.sh
+    rm "$HOME"/.config/raycast/scripts/vpn.sh
 }
 
 function install() {
